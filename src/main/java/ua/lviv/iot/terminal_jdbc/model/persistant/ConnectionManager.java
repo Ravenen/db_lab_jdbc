@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionManager {
-  private static final String url = "";
-  private static final String user = "";
-  private static final String password = "";
+  private static final String DB_URL = "jdbc:mysql://localhost:3306/pavliyk_3?useUnicode=true&serverTimezone=UTC";
+  private static final String DB_USERNAME = "lidl";
+  private static final String DB_PASSWORD = "CoolPassword233";
   
   private static Connection connection = null;
   
@@ -17,7 +17,7 @@ public class ConnectionManager {
   public static Connection getConnection() {
     if (connection == null) {
         try {
-          connection = DriverManager.getConnection(url, user, password);
+          connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
         } catch (SQLException e) {
           System.out.println("SQLException: " + e.getMessage());
           System.out.println("SQLState: " + e.getSQLState());

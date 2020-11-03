@@ -1,9 +1,9 @@
-package ua.lviv.iot.terminal_jdbc.model.DAO;
+package ua.lviv.iot.terminal_jdbc.model.dataaccess;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public interface GeneralDAO<T, ID> {
+public interface DataAccess<T, ID> {
   List<T> findAll() throws SQLException;
 
   T findById(ID id) throws SQLException;
