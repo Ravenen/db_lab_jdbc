@@ -10,23 +10,26 @@ import java.util.List;
 
 import ua.lviv.iot.terminal_jdbc.model.annotation.Table;
 import ua.lviv.iot.terminal_jdbc.model.dataaccess.DataAccess;
+import ua.lviv.iot.terminal_jdbc.model.entity.EntityManager;
 import ua.lviv.iot.terminal_jdbc.model.persistant.ConnectionManager;
-import ua.lviv.iot.terminal_jdbc.transformer.Transformer;
+import ua.lviv.iot.terminal_jdbc.model.transformer.Transformer;
 
-abstract public class AbstractDataAccess<T, ID> implements DataAccess<T, ID> {
+abstract public class AbstractDataAccess<T, K> implements DataAccess<T, K> {
 
   private static final String FIND_ALL_FORMAT = "SELECT * FROM %s";
-  private static final String FIND_BY_ID_FORMAT = "SELECT * FROM %s WHERE %s=?";
+  private static final String FIND_BY_FORMAT = "SELECT * FROM %s WHERE %s=?";
   private static final String INSERT_FORMAT = "INSERT %s (%s) VALUES (%s)";
   private static final String UPDATE_FORMAT = "UPDATE %s SET %s WHERE %s=?";
   private static final String DELETE_FORMAT = "DELETE FROM %s WHERE %s=?";
 
   private Class<T> clazz;
-  private Transformer<T, ID> entityTranformer;
+  private Transformer<T, K> entityTranformer;
+  private EntityManager<T, K> entityManager;
 
   public AbstractDataAccess(Class<T> clazz) {
     this.clazz = clazz;
-    this.entityTranformer = new Transformer<T, ID>(clazz);
+    this.entityManager = new EntityManager<T, K>(clazz);
+    this.entityTranformer = new Transformer<T, K>(clazz);
   }
 
   @Override
@@ -36,18 +39,17 @@ abstract public class AbstractDataAccess<T, ID> implements DataAccess<T, ID> {
 
     if (clazz.isAnnotationPresent(Table.class)) {
       Connection connection = ConnectionManager.getConnection();
-      String tableName = entityTranformer.getTableName();
+      String tableName = entityManager.getTableName();
       String sql = String.format(FIND_ALL_FORMAT, tableName);
       try (PreparedStatement ps = connection.prepareStatement(sql)) {
         try (ResultSet resultSet = ps.executeQuery()) {
           while (resultSet.next()) {
-            try {
-              entityList.add(entityTranformer.fromResultSetToEntity(resultSet));
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-              e.printStackTrace();
-            }
+            entityList.add(entityTranformer.fromResultSetToEntity(resultSet));
           }
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+            | NoSuchMethodException | SecurityException e) {
+          System.out.println("[Error] Exeption while transforming data into objects");
+          System.out.println("[Error] Message:" + e.getMessage());
         }
       }
     }
@@ -56,55 +58,38 @@ abstract public class AbstractDataAccess<T, ID> implements DataAccess<T, ID> {
   }
 
   @Override
-  public T findById(ID id) throws SQLException {
+  public T findById(K id) throws SQLException {
 
-    T entity = null;
-
-    if (clazz.isAnnotationPresent(Table.class)) {
-      String tableName = entityTranformer.getTableName();
-      String primaryKeyName = entityTranformer.getPrimaryKeyName();
-
-      Connection connection = ConnectionManager.getConnection();
-      String sql = String.format(FIND_BY_ID_FORMAT, tableName, primaryKeyName);
-      try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setInt(1, (Integer) id);
-        try (ResultSet resultSet = ps.executeQuery()) {
-          while (resultSet.next()) {
-            try {
-              entity = entityTranformer.fromResultSetToEntity(resultSet);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-              e.printStackTrace();
-            }
-          }
-        }
-      }
+    String tableName = entityManager.getTableName();
+    String primaryKeyName = entityManager.getPrimaryKeyName();
+    List<T> entities = findByField(tableName, primaryKeyName, id);
+    if (entities.size() > 0) {
+      return entities.get(0);
+    } else {
+      return null;
     }
-
-    return entity;
   }
 
   @Override
   public int create(T entity) throws SQLException {
 
-    try {
-      if (clazz.isAnnotationPresent(Table.class)) {
+    if (clazz.isAnnotationPresent(Table.class)) {
 
-        String tableName = entityTranformer.getTableName();
-        String columnsNamesString = entityTranformer.generateColumnsNamesString();
-        String columnsParameters = entityTranformer.generateColumnsParametersString();
+      String tableName = entityManager.getTableName();
+      String columnsNamesString = entityManager.generateColumnsNamesString();
+      String columnsParameters = entityManager.generateColumnsParametersString();
 
-        Connection connection = ConnectionManager.getConnection();
-        String sql = String.format(INSERT_FORMAT, tableName, columnsNamesString, columnsParameters);
+      Connection connection = ConnectionManager.getConnection();
+      String sql = String.format(INSERT_FORMAT, tableName, columnsNamesString, columnsParameters);
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-          entityTranformer.fillInColumnsInPreparedStatement(1, ps, entity);
-          return ps.executeUpdate();
-        }
-
+      try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        entityTranformer.fillInColumnsInPreparedStatement(1, ps, entity);
+        return ps.executeUpdate();
+      } catch (IllegalArgumentException | IllegalAccessException e) {
+        System.out.println("[Error] Exeption while preparing SQL query for INSERT");
+        System.out.println("[Error] Message:" + e.getMessage());
       }
-    } catch (IllegalArgumentException | IllegalAccessException e) {
-      e.printStackTrace();
+
     }
     return 0;
   }
@@ -112,52 +97,91 @@ abstract public class AbstractDataAccess<T, ID> implements DataAccess<T, ID> {
   @Override
   public int update(T entity) throws SQLException {
 
-    try {
-      if (clazz.isAnnotationPresent(Table.class)) {
+    if (clazz.isAnnotationPresent(Table.class)) {
 
-        String tableName = entityTranformer.getTableName();
-        String updateColumnsString = entityTranformer.generateUpdateColumnsString();
-        String primaryKeyName = entityTranformer.getPrimaryKeyName();
-        ID primaryKeyValue = entityTranformer.getPrimaryKeyValue(entity);
+      try {
+
+        String tableName = entityManager.getTableName();
+        String updateColumnsString = entityManager.generateUpdateColumnsString();
+        String primaryKeyName = entityManager.getPrimaryKeyName();
+        K primaryKeyValue = entityManager.getPrimaryKeyValue(entity);
 
         Connection connection = ConnectionManager.getConnection();
         String sql = String.format(UPDATE_FORMAT, tableName, updateColumnsString, primaryKeyName);
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-          int nextFreeIndex = entityTranformer.fillInColumnsInPreparedStatement(1, ps, entity);
-          ps.setInt(nextFreeIndex, (Integer) primaryKeyValue);
+          int nextFreeIndex;
+          nextFreeIndex = entityTranformer.fillInColumnsInPreparedStatement(1, ps, entity);
+          boolean isValueSet = entityTranformer.setPreparedStatementWithType(nextFreeIndex, ps, primaryKeyValue);
+          if (isValueSet == false) {
+            return 0;
+          }
           return ps.executeUpdate();
         }
-
+      } catch (IllegalArgumentException | IllegalAccessException e) {
+        System.out.println("[Error] Exeption while preparing SQL query for UPDATE");
+        System.out.println("[Error] Message:" + e.getMessage());
       }
-    } catch (IllegalArgumentException | IllegalAccessException e) {
-      e.printStackTrace();
+
     }
+
     return 0;
   }
 
   @Override
-  public int delete(ID id) throws SQLException {
+  public int delete(K id) throws SQLException {
 
-    try {
-      if (clazz.isAnnotationPresent(Table.class)) {
+    if (clazz.isAnnotationPresent(Table.class)) {
 
-        String tableName = entityTranformer.getTableName();
-        String primaryKeyName = entityTranformer.getPrimaryKeyName();
+      String tableName = entityManager.getTableName();
+      String primaryKeyName = entityManager.getPrimaryKeyName();
 
-        Connection connection = ConnectionManager.getConnection();
-        String sql = String.format(DELETE_FORMAT, tableName, primaryKeyName);
+      Connection connection = ConnectionManager.getConnection();
+      String sql = String.format(DELETE_FORMAT, tableName, primaryKeyName);
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-          ps.setInt(1, (Integer) id);
-          return ps.executeUpdate();
+      try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        boolean isValueSet = entityTranformer.setPreparedStatementWithType(1, ps, id);
+        if (isValueSet == false) {
+          return 0;
+        }
+        return ps.executeUpdate();
+      }
+
+    }
+
+    return 0;
+  }
+
+  protected List<T> findByInteger(String tableName, String fieldName, Integer fieldValue) throws SQLException {
+    return findByField(tableName, fieldName, fieldValue);
+  }
+
+  private List<T> findByField(String tableName, String fieldName, Object fieldValue) throws SQLException {
+    List<T> entityList = new LinkedList<T>();
+
+    if (clazz.isAnnotationPresent(Table.class)) {
+      Connection connection = ConnectionManager.getConnection();
+      String sql = String.format(FIND_BY_FORMAT, tableName, fieldName);
+      try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+        boolean isValueSet = entityTranformer.setPreparedStatementWithType(1, ps, fieldValue);
+        if (isValueSet == false) {
+          return null;
         }
 
+        try (ResultSet resultSet = ps.executeQuery()) {
+          while (resultSet.next()) {
+            entityList.add(entityTranformer.fromResultSetToEntity(resultSet));
+          }
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+            | NoSuchMethodException | SecurityException e) {
+          System.out.println("[Error] Exeption while transforming data into objects");
+          System.out.println("[Error] Message:" + e.getMessage());
+        }
       }
-    } catch (IllegalArgumentException | SQLException e) {
-      e.printStackTrace();
     }
-    return 0;
+
+    return entityList;
   }
 
 }
