@@ -7,14 +7,17 @@ import java.util.Scanner;
 import ua.lviv.iot.terminal_jdbc.controller.AddressController;
 import ua.lviv.iot.terminal_jdbc.controller.CityController;
 import ua.lviv.iot.terminal_jdbc.controller.CountryController;
+import ua.lviv.iot.terminal_jdbc.controller.ManufacturerController;
 import ua.lviv.iot.terminal_jdbc.controller.RegionController;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.AddressControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CityControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CountryControllerImpl;
+import ua.lviv.iot.terminal_jdbc.controller.implementation.ManufacturerControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.RegionControllerImpl;
 import ua.lviv.iot.terminal_jdbc.model.entity.AddressEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CityEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CountryEntity;
+import ua.lviv.iot.terminal_jdbc.model.entity.ManufacturerEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.RegionEntity;
 
 public class View {
@@ -65,7 +68,7 @@ public class View {
     tableMenuMethods.put("2", this::showRegionMenu);
     tableMenuMethods.put("3", this::showCityMenu);
     tableMenuMethods.put("4", this::showAddressMenu);
-//    tableMenuMethods.put("5", "Table: Manufacturer");
+    tableMenuMethods.put("5", this::showManufacturerMenu);
 //    tableMenuMethods.put("6", "Table: Terminal type");
 //    tableMenuMethods.put("7", "Table: Terminal");
 //    tableMenuMethods.put("8", "Table: Sex");
@@ -97,6 +100,12 @@ public class View {
   private void showAddressMenu() {
     Map<String, String> menu = generateAddressMenu();
     Map<String, Printable> menuMethods = generateAddressMenuMethods();
+    showMenuFromMaps(menu, menuMethods);
+  }
+
+  private void showManufacturerMenu() {
+    Map<String, String> menu = generateManufacturerMenu();
+    Map<String, Printable> menuMethods = generateManufacturerMenuMethods();
     showMenuFromMaps(menu, menuMethods);
   }
 
@@ -197,6 +206,31 @@ public class View {
     menuMethods.put("3", addressOperation::create);
     menuMethods.put("4", addressOperation::update);
     menuMethods.put("5", addressOperation::delete);
+    return menuMethods;
+  }
+
+  private Map<String, String> generateManufacturerMenu() {
+    Map<String, String> menu = new LinkedHashMap<String, String>();
+    menu.put("1", "Select all manufacturers");
+    menu.put("2", "Select manufacturer");
+    menu.put("3", "Create manufacturer");
+    menu.put("4", "Update manufacturer");
+    menu.put("5", "Delete manufacturer");
+    return menu;
+  }
+
+  private Map<String, Printable> generateManufacturerMenuMethods() {
+    ManufacturerController manufacturerController = new ManufacturerControllerImpl();
+    Formatter<ManufacturerEntity, Integer> formatter = new Formatter<>(ManufacturerEntity.class);
+    ViewOperations<ManufacturerEntity, Integer> manufacturerOperation = new ViewOperations<>(manufacturerController,
+        formatter, ManufacturerEntity.class);
+
+    Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
+    menuMethods.put("1", manufacturerOperation::findAll);
+    menuMethods.put("2", manufacturerOperation::findById);
+    menuMethods.put("3", manufacturerOperation::create);
+    menuMethods.put("4", manufacturerOperation::update);
+    menuMethods.put("5", manufacturerOperation::delete);
     return menuMethods;
   }
 
