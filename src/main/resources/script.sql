@@ -191,14 +191,12 @@ FOR EACH ROW BEGIN
 END$$
 DELIMITER ;
 
--- DELIMITER $$
--- CREATE TRIGGER calculate_total_update AFTER UPDATE ON workman
--- FOR EACH ROW BEGIN
--- 	UPDATE service SET total_price_uah = (duration_in_hours * NEW.price_per_hour_uah) WHERE workman_id = NEW.id;
--- END$$
--- DELIMITER ;
-
-
+DELIMITER $$
+CREATE TRIGGER calculate_total_update BEFORE UPDATE ON service
+FOR EACH ROW BEGIN
+  SET NEW.total_price_uah = (SELECT (NEW.duration_in_hours * workman.price_per_hour_uah) FROM workman WHERE NEW.workman_id = workman.id);
+END$$
+DELIMITER ;
 
 INSERT INTO country (name) VALUES
 ('Ukraine'),

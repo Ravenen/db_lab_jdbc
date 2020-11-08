@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ua.lviv.iot.terminal_jdbc.model.annotation.Column;
-import ua.lviv.iot.terminal_jdbc.model.annotation.PrimaryKey;
 import ua.lviv.iot.terminal_jdbc.model.manager.EntityManager;
 
 public class Transformer<T, K> {
@@ -47,12 +46,10 @@ public class Transformer<T, K> {
   public int fillInColumnsInPreparedStatement(int startFromIndex, PreparedStatement ps, T entity)
       throws IllegalArgumentException, IllegalAccessException, SQLException {
     int index = startFromIndex;
-    for (Field field : entityManager.getEntityFields()) {
-      if (field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(PrimaryKey.class)) {
-        field.setAccessible(true);
-        setPreparedStatementWithType(index, ps, field.get(entity));
-        index++;
-      }
+    for (Field field : entityManager.getColumnsInputable()) {
+      field.setAccessible(true);
+      setPreparedStatementWithType(index, ps, field.get(entity));
+      index++;
     }
     int nextFreeIndex = index;
     return nextFreeIndex;

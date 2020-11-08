@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ua.lviv.iot.terminal_jdbc.model.annotation.Column;
+import ua.lviv.iot.terminal_jdbc.model.annotation.InputIgnore;
 import ua.lviv.iot.terminal_jdbc.model.annotation.PrimaryKey;
 import ua.lviv.iot.terminal_jdbc.model.annotation.Table;
 
@@ -52,15 +53,24 @@ public class EntityManager<T, K> {
     return null;
   }
 
-  public List<String> getColumnsNamesWithoutKey() {
+  public List<String> getColumnsNamesInputable() {
     List<String> columnsNames = new LinkedList<String>();
-    List<Field> columns = getColumns();
+    List<Field> columns = getColumnsInputable();
     for (Field field : columns) {
-      if (!field.isAnnotationPresent(PrimaryKey.class)) {
-        columnsNames.add(field.getAnnotation(Column.class).name());
-      }
+      columnsNames.add(field.getAnnotation(Column.class).name());
     }
     return columnsNames;
+  }
+
+  public List<Field> getColumnsInputable() {
+    List<Field> inputableColumns = new LinkedList<Field>();
+    List<Field> columns = getColumns();
+    for (Field field : columns) {
+      if (!field.isAnnotationPresent(PrimaryKey.class) && !field.isAnnotationPresent(InputIgnore.class)) {
+        inputableColumns.add(field);
+      }
+    }
+    return inputableColumns;
   }
 
   public List<String> getColumnsNames() {
@@ -83,20 +93,20 @@ public class EntityManager<T, K> {
   }
 
   public String generateColumnsNamesString() {
-    List<String> columns = getColumnsNamesWithoutKey();
+    List<String> columns = getColumnsNamesInputable();
     String columnsNamesString = String.join(",", columns);
     return columnsNamesString;
   }
 
   public String generateColumnsParametersString() {
-    List<String> columns = getColumnsNamesWithoutKey();
+    List<String> columns = getColumnsNamesInputable();
     columns.replaceAll(s -> s = "?");
     String columnsParameters = String.join(",", columns);
     return columnsParameters;
   }
 
   public String generateUpdateColumnsString() {
-    List<String> columns = getColumnsNamesWithoutKey();
+    List<String> columns = getColumnsNamesInputable();
     columns.replaceAll(s -> s += "=?");
     String updateColumnsString = String.join(",", columns);
     return updateColumnsString;

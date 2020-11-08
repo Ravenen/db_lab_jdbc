@@ -83,13 +83,11 @@ public class ViewOperations<T, K> {
 
   public void create() {
     EntityManager<T, K> entityManager = new EntityManager<>(entityClass);
-    Field[] fields = entityManager.getEntityFields();
+    Field[] fields = entityManager.getColumnsInputable().toArray(new Field[0]);
     try {
       T entity = entityManager.getEntityClass().getConstructor().newInstance();
       for (Field field : fields) {
-        if (field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(PrimaryKey.class)) {
-          inputValueForField(field, entity);
-        }
+        inputValueForField(field, entity);
       }
       T newEntity = controller.create(entity);
       if (newEntity != null) {
@@ -120,7 +118,7 @@ public class ViewOperations<T, K> {
           T foundEntity = controller.findById((K) id);
           if (foundEntity != null) {
             EntityManager<T, K> entityManager = new EntityManager<>(entityClass);
-            List<String> columnsNames = entityManager.getColumnsNamesWithoutKey();
+            List<String> columnsNames = entityManager.getColumnsNamesInputable();
             while (true) {
               System.out.println(TEXT_CHOOSE_FIELD);
               for (String columnName : columnsNames) {
