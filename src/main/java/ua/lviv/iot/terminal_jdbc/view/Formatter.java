@@ -32,13 +32,12 @@ public class Formatter<T, K> {
       System.out.println(formattedNames);
       System.out.println(delimitter);
       for (T entity : entities) {
-        System.out.format(format + "\n", (Object[]) propertiesToArray(entity));
+        System.out.println(String.format(format, (Object[]) propertiesToArray(entity)));
       }
       System.out.println(delimitter);
     } catch (IllegalArgumentException | IllegalAccessException e) {
       System.out.println("[Error] Exeption while preparing to format data");
       System.out.println("[Error] Message: " + e.getMessage());
-      e.printStackTrace();
     }
   }
 

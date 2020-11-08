@@ -4,12 +4,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import ua.lviv.iot.terminal_jdbc.controller.AddressController;
 import ua.lviv.iot.terminal_jdbc.controller.CityController;
 import ua.lviv.iot.terminal_jdbc.controller.CountryController;
 import ua.lviv.iot.terminal_jdbc.controller.RegionController;
+import ua.lviv.iot.terminal_jdbc.controller.implementation.AddressControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CityControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CountryControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.RegionControllerImpl;
+import ua.lviv.iot.terminal_jdbc.model.entity.AddressEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CityEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CountryEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.RegionEntity;
@@ -61,7 +64,7 @@ public class View {
     tableMenuMethods.put("1", this::showCountryMenu);
     tableMenuMethods.put("2", this::showRegionMenu);
     tableMenuMethods.put("3", this::showCityMenu);
-//    tableMenuMethods.put("4", this::showAddressMenu);
+    tableMenuMethods.put("4", this::showAddressMenu);
 //    tableMenuMethods.put("5", "Table: Manufacturer");
 //    tableMenuMethods.put("6", "Table: Terminal type");
 //    tableMenuMethods.put("7", "Table: Terminal");
@@ -88,6 +91,12 @@ public class View {
   private void showCityMenu() {
     Map<String, String> menu = generateCityMenu();
     Map<String, Printable> menuMethods = generateCityMenuMethods();
+    showMenuFromMaps(menu, menuMethods);
+  }
+
+  private void showAddressMenu() {
+    Map<String, String> menu = generateAddressMenu();
+    Map<String, Printable> menuMethods = generateAddressMenuMethods();
     showMenuFromMaps(menu, menuMethods);
   }
 
@@ -163,6 +172,31 @@ public class View {
     menuMethods.put("3", cityOperation::create);
     menuMethods.put("4", cityOperation::update);
     menuMethods.put("5", cityOperation::delete);
+    return menuMethods;
+  }
+
+  private Map<String, String> generateAddressMenu() {
+    Map<String, String> menu = new LinkedHashMap<String, String>();
+    menu.put("1", "Select all addresses");
+    menu.put("2", "Select address");
+    menu.put("3", "Create address");
+    menu.put("4", "Update address");
+    menu.put("5", "Delete address");
+    return menu;
+  }
+
+  private Map<String, Printable> generateAddressMenuMethods() {
+    AddressController addressController = new AddressControllerImpl();
+    Formatter<AddressEntity, Integer> formatter = new Formatter<>(AddressEntity.class);
+    ViewOperations<AddressEntity, Integer> addressOperation = new ViewOperations<>(addressController, formatter,
+        AddressEntity.class);
+
+    Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
+    menuMethods.put("1", addressOperation::findAll);
+    menuMethods.put("2", addressOperation::findById);
+    menuMethods.put("3", addressOperation::create);
+    menuMethods.put("4", addressOperation::update);
+    menuMethods.put("5", addressOperation::delete);
     return menuMethods;
   }
 
