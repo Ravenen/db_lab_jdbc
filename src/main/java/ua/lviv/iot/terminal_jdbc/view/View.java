@@ -9,16 +9,19 @@ import ua.lviv.iot.terminal_jdbc.controller.CityController;
 import ua.lviv.iot.terminal_jdbc.controller.CountryController;
 import ua.lviv.iot.terminal_jdbc.controller.ManufacturerController;
 import ua.lviv.iot.terminal_jdbc.controller.RegionController;
+import ua.lviv.iot.terminal_jdbc.controller.TerminalTypeController;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.AddressControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CityControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CountryControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.ManufacturerControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.RegionControllerImpl;
+import ua.lviv.iot.terminal_jdbc.controller.implementation.TerminalTypeControllerImpl;
 import ua.lviv.iot.terminal_jdbc.model.entity.AddressEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CityEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CountryEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.ManufacturerEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.RegionEntity;
+import ua.lviv.iot.terminal_jdbc.model.entity.TerminalTypeEntity;
 
 public class View {
 
@@ -69,7 +72,7 @@ public class View {
     tableMenuMethods.put("3", this::showCityMenu);
     tableMenuMethods.put("4", this::showAddressMenu);
     tableMenuMethods.put("5", this::showManufacturerMenu);
-//    tableMenuMethods.put("6", "Table: Terminal type");
+    tableMenuMethods.put("6", this::showTerminalTypeMenu);
 //    tableMenuMethods.put("7", "Table: Terminal");
 //    tableMenuMethods.put("8", "Table: Sex");
 //    tableMenuMethods.put("9", "Table: Position");
@@ -106,6 +109,12 @@ public class View {
   private void showManufacturerMenu() {
     Map<String, String> menu = generateManufacturerMenu();
     Map<String, Printable> menuMethods = generateManufacturerMenuMethods();
+    showMenuFromMaps(menu, menuMethods);
+  }
+
+  private void showTerminalTypeMenu() {
+    Map<String, String> menu = generateTerminalTypeMenu();
+    Map<String, Printable> menuMethods = generateTerminalTypeMenuMethods();
     showMenuFromMaps(menu, menuMethods);
   }
 
@@ -231,6 +240,31 @@ public class View {
     menuMethods.put("3", manufacturerOperation::create);
     menuMethods.put("4", manufacturerOperation::update);
     menuMethods.put("5", manufacturerOperation::delete);
+    return menuMethods;
+  }
+
+  private Map<String, String> generateTerminalTypeMenu() {
+    Map<String, String> menu = new LinkedHashMap<String, String>();
+    menu.put("1", "Select all terminal types");
+    menu.put("2", "Select terminal type");
+    menu.put("3", "Create terminal type");
+    menu.put("4", "Update termnal type");
+    menu.put("5", "Delete termina type");
+    return menu;
+  }
+
+  private Map<String, Printable> generateTerminalTypeMenuMethods() {
+    TerminalTypeController terminalTypeController = new TerminalTypeControllerImpl();
+    Formatter<TerminalTypeEntity, Integer> formatter = new Formatter<>(TerminalTypeEntity.class);
+    ViewOperations<TerminalTypeEntity, Integer> terminalTypeOperation = new ViewOperations<>(terminalTypeController,
+        formatter, TerminalTypeEntity.class);
+
+    Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
+    menuMethods.put("1", terminalTypeOperation::findAll);
+    menuMethods.put("2", terminalTypeOperation::findById);
+    menuMethods.put("3", terminalTypeOperation::create);
+    menuMethods.put("4", terminalTypeOperation::update);
+    menuMethods.put("5", terminalTypeOperation::delete);
     return menuMethods;
   }
 
