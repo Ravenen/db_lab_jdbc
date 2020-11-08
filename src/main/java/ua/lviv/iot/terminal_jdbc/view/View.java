@@ -4,16 +4,19 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import ua.lviv.iot.terminal_jdbc.controller.Controller;
+import ua.lviv.iot.terminal_jdbc.controller.CountryController;
+import ua.lviv.iot.terminal_jdbc.controller.RegionController;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CountryControllerImpl;
+import ua.lviv.iot.terminal_jdbc.controller.implementation.RegionControllerImpl;
 import ua.lviv.iot.terminal_jdbc.model.entity.CountryEntity;
+import ua.lviv.iot.terminal_jdbc.model.entity.RegionEntity;
 
 public class View {
 
   private static final String KEY_EXIT = "Q";
-  
+
   private static final String ERROR_NO_SUCH_OPTION = "No such option found. Try again.";
-  
+
   private static final String TEXT_SELECT_MENU_OPTION = "Please choose menu option: ";
   private static final String TEXT_GO_BACK = "Go back or quit";
 
@@ -53,7 +56,7 @@ public class View {
   private Map<String, Printable> generateTablesMenuMethods() {
     Map<String, Printable> tableMenuMethods = new LinkedHashMap<String, Printable>();
     tableMenuMethods.put("1", this::showCountryMenu);
-//    tableMenuMethods.put("2", this::showRegionMenu);
+    tableMenuMethods.put("2", this::showRegionMenu);
 //    tableMenuMethods.put("3", this::showCityMenu);
 //    tableMenuMethods.put("4", this::showAddressMenu);
 //    tableMenuMethods.put("5", "Table: Manufacturer");
@@ -68,47 +71,64 @@ public class View {
   }
 
   private void showCountryMenu() {
-    Map<String, String> countryMenu = generateCountryMenu();
-    Map<String, Printable> countryMenuMethods = generateCountryMenuMethods();
-    showMenuFromMaps(countryMenu, countryMenuMethods);
+    Map<String, String> menu = generateCountryMenu();
+    Map<String, Printable> menuMethods = generateCountryMenuMethods();
+    showMenuFromMaps(menu, menuMethods);
   }
 
-//  private void showRegionMenu() {
-//    Map<String, String> regionMenu = generateRegionMenu();
-//    Map<String, Printable> regionMenuMethods = generateRegionMenuMethods();
-//    showMenuFromMaps(regionMenu, regionMenuMethods);
-//  }
-//  private void showCityMenu() {
-//    Map<String, String> cityMenu = generateCityMenu();
-//    Map<String, Printable> cityMenuMethods = generateCityMenuMethods();
-//    showMenuFromMaps(cityMenu, cityMenuMethods);
-//  }
-  private void showAddressMenu() {
-    System.out.println("Here is address menu");
+  private void showRegionMenu() {
+    Map<String, String> menu = generateRegionMenu();
+    Map<String, Printable> menuMethods = generateRegionMenuMethods();
+    showMenuFromMaps(menu, menuMethods);
   }
 
   private Map<String, String> generateCountryMenu() {
-    Map<String, String> countryMenu = new LinkedHashMap<String, String>();
-    countryMenu.put("1", "Select all countries");
-    countryMenu.put("2", "Select country");
-    countryMenu.put("3", "Create country");
-    countryMenu.put("4", "Update country");
-    countryMenu.put("5", "Delete country");
-    return countryMenu;
+    Map<String, String> menu = new LinkedHashMap<String, String>();
+    menu.put("1", "Select all countries");
+    menu.put("2", "Select country");
+    menu.put("3", "Create country");
+    menu.put("4", "Update country");
+    menu.put("5", "Delete country");
+    return menu;
   }
 
   private Map<String, Printable> generateCountryMenuMethods() {
-    Controller<CountryEntity, Integer> countryController = new CountryControllerImpl();
+    CountryController countryController = new CountryControllerImpl();
     Formatter<CountryEntity, Integer> formatter = new Formatter<>(CountryEntity.class);
     ViewOperations<CountryEntity, Integer> countryOperation = new ViewOperations<>(countryController, formatter,
         CountryEntity.class);
 
+    Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
+    menuMethods.put("1", countryOperation::findAll);
+    menuMethods.put("2", countryOperation::findById);
+    menuMethods.put("3", countryOperation::create);
+    menuMethods.put("4", countryOperation::update);
+    menuMethods.put("5", countryOperation::delete);
+    return menuMethods;
+  }
+
+  private Map<String, String> generateRegionMenu() {
+    Map<String, String> menu = new LinkedHashMap<String, String>();
+    menu.put("1", "Select all regions");
+    menu.put("2", "Select region");
+    menu.put("3", "Create region");
+    menu.put("4", "Update region");
+    menu.put("5", "Delete region");
+    return menu;
+  }
+
+  private Map<String, Printable> generateRegionMenuMethods() {
+    RegionController regionController = new RegionControllerImpl();
+    Formatter<RegionEntity, Integer> formatter = new Formatter<>(RegionEntity.class);
+    ViewOperations<RegionEntity, Integer> regionOperation = new ViewOperations<>(regionController, formatter,
+        RegionEntity.class);
+
     Map<String, Printable> countryMenuMethods = new LinkedHashMap<String, Printable>();
-    countryMenuMethods.put("1", countryOperation::findAll);
-    countryMenuMethods.put("2", countryOperation::findById);
-    countryMenuMethods.put("3", countryOperation::create);
-    countryMenuMethods.put("4", countryOperation::update);
-    countryMenuMethods.put("5", countryOperation::delete);
+    countryMenuMethods.put("1", regionOperation::findAll);
+    countryMenuMethods.put("2", regionOperation::findById);
+    countryMenuMethods.put("3", regionOperation::create);
+    countryMenuMethods.put("4", regionOperation::update);
+    countryMenuMethods.put("5", regionOperation::delete);
     return countryMenuMethods;
   }
 
