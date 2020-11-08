@@ -4,10 +4,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import ua.lviv.iot.terminal_jdbc.controller.CityController;
 import ua.lviv.iot.terminal_jdbc.controller.CountryController;
 import ua.lviv.iot.terminal_jdbc.controller.RegionController;
+import ua.lviv.iot.terminal_jdbc.controller.implementation.CityControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CountryControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.RegionControllerImpl;
+import ua.lviv.iot.terminal_jdbc.model.entity.CityEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CountryEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.RegionEntity;
 
@@ -57,7 +60,7 @@ public class View {
     Map<String, Printable> tableMenuMethods = new LinkedHashMap<String, Printable>();
     tableMenuMethods.put("1", this::showCountryMenu);
     tableMenuMethods.put("2", this::showRegionMenu);
-//    tableMenuMethods.put("3", this::showCityMenu);
+    tableMenuMethods.put("3", this::showCityMenu);
 //    tableMenuMethods.put("4", this::showAddressMenu);
 //    tableMenuMethods.put("5", "Table: Manufacturer");
 //    tableMenuMethods.put("6", "Table: Terminal type");
@@ -79,6 +82,12 @@ public class View {
   private void showRegionMenu() {
     Map<String, String> menu = generateRegionMenu();
     Map<String, Printable> menuMethods = generateRegionMenuMethods();
+    showMenuFromMaps(menu, menuMethods);
+  }
+
+  private void showCityMenu() {
+    Map<String, String> menu = generateCityMenu();
+    Map<String, Printable> menuMethods = generateCityMenuMethods();
     showMenuFromMaps(menu, menuMethods);
   }
 
@@ -123,13 +132,38 @@ public class View {
     ViewOperations<RegionEntity, Integer> regionOperation = new ViewOperations<>(regionController, formatter,
         RegionEntity.class);
 
-    Map<String, Printable> countryMenuMethods = new LinkedHashMap<String, Printable>();
-    countryMenuMethods.put("1", regionOperation::findAll);
-    countryMenuMethods.put("2", regionOperation::findById);
-    countryMenuMethods.put("3", regionOperation::create);
-    countryMenuMethods.put("4", regionOperation::update);
-    countryMenuMethods.put("5", regionOperation::delete);
-    return countryMenuMethods;
+    Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
+    menuMethods.put("1", regionOperation::findAll);
+    menuMethods.put("2", regionOperation::findById);
+    menuMethods.put("3", regionOperation::create);
+    menuMethods.put("4", regionOperation::update);
+    menuMethods.put("5", regionOperation::delete);
+    return menuMethods;
+  }
+
+  private Map<String, String> generateCityMenu() {
+    Map<String, String> menu = new LinkedHashMap<String, String>();
+    menu.put("1", "Select all cities");
+    menu.put("2", "Select city");
+    menu.put("3", "Create city");
+    menu.put("4", "Update city");
+    menu.put("5", "Delete city");
+    return menu;
+  }
+
+  private Map<String, Printable> generateCityMenuMethods() {
+    CityController cityController = new CityControllerImpl();
+    Formatter<CityEntity, Integer> formatter = new Formatter<>(CityEntity.class);
+    ViewOperations<CityEntity, Integer> cityOperation = new ViewOperations<>(cityController, formatter,
+        CityEntity.class);
+
+    Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
+    menuMethods.put("1", cityOperation::findAll);
+    menuMethods.put("2", cityOperation::findById);
+    menuMethods.put("3", cityOperation::create);
+    menuMethods.put("4", cityOperation::update);
+    menuMethods.put("5", cityOperation::delete);
+    return menuMethods;
   }
 
   private void showMenuFromMaps(Map<String, String> keyName, Map<String, Printable> keyMethod) {
