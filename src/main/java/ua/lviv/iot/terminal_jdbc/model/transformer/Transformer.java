@@ -2,6 +2,7 @@ package ua.lviv.iot.terminal_jdbc.model.transformer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 
 import ua.lviv.iot.terminal_jdbc.model.annotation.Column;
 import ua.lviv.iot.terminal_jdbc.model.annotation.PrimaryKey;
-import ua.lviv.iot.terminal_jdbc.model.entity.EntityManager;
+import ua.lviv.iot.terminal_jdbc.model.manager.EntityManager;
 
 public class Transformer<T, K> {
 
@@ -35,6 +36,8 @@ public class Transformer<T, K> {
           field.set(entity, resultSet.getInt(name));
         } else if (fieldType == Date.class) {
           field.set(entity, resultSet.getDate(name));
+        } else if (fieldType == BigDecimal.class) {
+          field.set(entity, resultSet.getBigDecimal(name));
         }
       }
     }
@@ -63,6 +66,8 @@ public class Transformer<T, K> {
       ps.setString(index, (String) value);
     } else if (fieldType == Date.class) {
       ps.setDate(index, (Date) value);
+    } else if (fieldType == BigDecimal.class) {
+      ps.setBigDecimal(index, (BigDecimal) value);
     } else {
       return false;
     }

@@ -10,7 +10,7 @@ import java.util.List;
 
 import ua.lviv.iot.terminal_jdbc.model.annotation.Table;
 import ua.lviv.iot.terminal_jdbc.model.dataaccess.DataAccess;
-import ua.lviv.iot.terminal_jdbc.model.entity.EntityManager;
+import ua.lviv.iot.terminal_jdbc.model.manager.EntityManager;
 import ua.lviv.iot.terminal_jdbc.model.persistant.ConnectionManager;
 import ua.lviv.iot.terminal_jdbc.model.transformer.Transformer;
 

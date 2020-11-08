@@ -1,4 +1,4 @@
-package ua.lviv.iot.terminal_jdbc.model.entity;
+package ua.lviv.iot.terminal_jdbc.model.manager;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;

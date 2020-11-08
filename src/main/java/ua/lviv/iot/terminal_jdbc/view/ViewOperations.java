@@ -2,6 +2,7 @@ package ua.lviv.iot.terminal_jdbc.view;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -11,7 +12,7 @@ import java.util.Scanner;
 import ua.lviv.iot.terminal_jdbc.controller.Controller;
 import ua.lviv.iot.terminal_jdbc.model.annotation.Column;
 import ua.lviv.iot.terminal_jdbc.model.annotation.PrimaryKey;
-import ua.lviv.iot.terminal_jdbc.model.entity.EntityManager;
+import ua.lviv.iot.terminal_jdbc.model.manager.EntityManager;
 
 public class ViewOperations<T, K> {
 
@@ -205,6 +206,8 @@ public class ViewOperations<T, K> {
       limitation = "max length - " + columnLength;
     } else if (fieldType == Date.class) {
       limitation = "format yyyy-mm-dd";
+    } else if (fieldType == BigDecimal.class) {
+      limitation = "format xxx.xx";
     }
     while (true) {
       System.out.println(String.format(TEXT_ENTER_FIELD_FORMAT, String.format("%s (%s)", columnName, limitation)));
@@ -228,6 +231,15 @@ public class ViewOperations<T, K> {
           field.setAccessible(true);
           field.set(entity, date);
           break;
+        } else if (fieldType == BigDecimal.class) {
+          BigDecimal value = new BigDecimal(inputText);
+          if (value.compareTo(BigDecimal.valueOf(0)) >= 0) {
+            field.setAccessible(true);
+            field.set(entity, value);
+            break;
+          } else {
+            System.out.println(ERROR_INVALID_VALUE);
+          }
         }
       } catch (NumberFormatException e) {
         System.out.println(ERROR_INVALID_VALUE);

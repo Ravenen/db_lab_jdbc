@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ua.lviv.iot.terminal_jdbc.model.annotation.Column;
-import ua.lviv.iot.terminal_jdbc.model.entity.EntityManager;
+import ua.lviv.iot.terminal_jdbc.model.manager.EntityManager;
 
 public class Formatter<T, K> {
 
