@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 import ua.lviv.iot.terminal_jdbc.controller.Controller;
 import ua.lviv.iot.terminal_jdbc.model.annotation.Column;
-import ua.lviv.iot.terminal_jdbc.model.annotation.PrimaryKey;
 import ua.lviv.iot.terminal_jdbc.model.manager.EntityManager;
 
 public class ViewOperations<T, K> {
@@ -250,11 +249,10 @@ public class ViewOperations<T, K> {
   }
 
   private Field getFieldByName(Field[] fields, String fieldName) {
-    for (Field field : fields) {
-      if (field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(PrimaryKey.class)) {
-        if (field.getAnnotation(Column.class).name().equals(fieldName)) {
-          return field;
-        }
+    EntityManager<T, K> entityManager = new EntityManager<>(entityClass);
+    for (Field field : entityManager.getColumnsInputable()) {
+      if (field.getAnnotation(Column.class).name().equals(fieldName)) {
+        return field;
       }
     }
     return null;
