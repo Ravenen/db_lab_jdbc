@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
+import ua.lviv.iot.terminal_jdbc.model.annotation.Column;
 import ua.lviv.iot.terminal_jdbc.model.entity.EntityManager;
 
 public class Formatter<T, K> {
@@ -48,12 +49,12 @@ public class Formatter<T, K> {
   }
 
   private String[] propertiesToArray(T entity) throws IllegalArgumentException, IllegalAccessException {
-    Field[] fields = entityManager.getEntityFields();
-    String[] properties = new String[fields.length];
-    for (int i = 0; i < fields.length; i++) {
-      fields[i].setAccessible(true);
-      if (fields[i].get(entity) != null) {
-        properties[i] = fields[i].get(entity).toString();
+    Field[] columns = entityManager.getColumns().toArray(new Field[0]);
+    String[] properties = new String[columns.length];
+    for (int i = 0; i < columns.length; i++) {
+      columns[i].setAccessible(true);
+      if (columns[i].get(entity) != null) {
+        properties[i] = columns[i].get(entity).toString();
       } else {
         properties[i] = "-";
       }
@@ -67,19 +68,22 @@ public class Formatter<T, K> {
   }
 
   private int[] getColumnLengthes(List<T> entities) throws IllegalArgumentException, IllegalAccessException {
-    Field[] fields = entityManager.getEntityFields();
-    int[] lengthes = new int[fields.length];
+    Field[] columns = entityManager.getColumns().toArray(new Field[0]);
+    int[] lengthes = new int[columns.length];
     for (T entity : entities) {
-      for (int i = 0; i < fields.length; i++) {
-        fields[i].setAccessible(true);
-        if (fields[i].get(entity) != null) {
-          int fieldLength = fields[i].get(entity).toString().length();
-          lengthes[i] = (lengthes[i] < fieldLength) ? fieldLength : lengthes[i];
+      for (int i = 0; i < columns.length; i++) {
+        if (columns[i].isAnnotationPresent(Column.class)) {
+          columns[i].setAccessible(true);
+          if (columns[i].get(entity) != null) {
+            int fieldLength = columns[i].get(entity).toString().length();
+            lengthes[i] = (lengthes[i] < fieldLength) ? fieldLength : lengthes[i];
+          }
         }
       }
     }
-    for (int i = 0; i < fields.length; i++) {
-      int fieldNameLength = fields[i].getName().length();
+    String[] fieldNames = getColumnNames();
+    for (int i = 0; i < fieldNames.length; i++) {
+      int fieldNameLength = fieldNames[i].length();
       lengthes[i] = (lengthes[i] < fieldNameLength) ? fieldNameLength : lengthes[i];
     }
 

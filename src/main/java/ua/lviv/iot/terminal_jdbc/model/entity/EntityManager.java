@@ -21,7 +21,7 @@ public class EntityManager<T, K> {
   public Class<T> getEntityClass() {
     return clazz;
   }
-  
+
   public Field[] getEntityFields() {
     return fields;
   }
@@ -54,22 +54,32 @@ public class EntityManager<T, K> {
 
   public List<String> getColumnsNamesWithoutKey() {
     List<String> columnsNames = new LinkedList<String>();
-    for (Field field : fields) {
-      if (field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(PrimaryKey.class)) {
+    List<Field> columns = getColumns();
+    for (Field field : columns) {
+      if (!field.isAnnotationPresent(PrimaryKey.class)) {
         columnsNames.add(field.getAnnotation(Column.class).name());
       }
     }
     return columnsNames;
   }
-  
+
   public List<String> getColumnsNames() {
     List<String> columnsNames = new LinkedList<String>();
-    for (Field field : fields) {
-      if (field.isAnnotationPresent(Column.class)) {
-        columnsNames.add(field.getAnnotation(Column.class).name());
-      }
+    List<Field> columns = getColumns();
+    for (Field field : columns) {
+      columnsNames.add(field.getAnnotation(Column.class).name());
     }
     return columnsNames;
+  }
+
+  public List<Field> getColumns() {
+    List<Field> columns = new LinkedList<Field>();
+    for (Field field : fields) {
+      if (field.isAnnotationPresent(Column.class)) {
+        columns.add(field);
+      }
+    }
+    return columns;
   }
 
   public String generateColumnsNamesString() {
