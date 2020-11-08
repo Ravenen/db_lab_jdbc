@@ -53,7 +53,11 @@ public class Formatter<T, K> {
     String[] properties = new String[fields.length];
     for (int i = 0; i < fields.length; i++) {
       fields[i].setAccessible(true);
-      properties[i] = fields[i].get(entity).toString();
+      if (fields[i].get(entity) != null) {
+        properties[i] = fields[i].get(entity).toString();
+      } else {
+        properties[i] = "-";
+      }
     }
     return properties;
   }
@@ -69,8 +73,10 @@ public class Formatter<T, K> {
     for (T entity : entities) {
       for (int i = 0; i < fields.length; i++) {
         fields[i].setAccessible(true);
-        int fieldLength = fields[i].get(entity).toString().length();
-        lengthes[i] = (lengthes[i] < fieldLength) ? fieldLength : lengthes[i];
+        if (fields[i].get(entity) != null) {
+          int fieldLength = fields[i].get(entity).toString().length();
+          lengthes[i] = (lengthes[i] < fieldLength) ? fieldLength : lengthes[i];
+        }
       }
     }
     for (int i = 0; i < fields.length; i++) {
