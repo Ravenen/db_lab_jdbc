@@ -1,22 +1,28 @@
 package ua.lviv.iot.terminal.model.persistant;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConnectionManager {
-  private static final String DB_URL = "jdbc:mysql://localhost:3306/pavliyk_3?useUnicode=true&serverTimezone=UTC";
-  private static final String DB_USERNAME = "lidl";
-  private static final String DB_PASSWORD = "CoolPassword233";
 
   private static Connection connection = null;
 
   private ConnectionManager() {
   }
 
-  public static Connection getConnection() throws SQLException {
+  public static Connection getConnection() throws SQLException, IOException {
     if (connection == null) {
-      connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+      try (InputStream input = ConnectionManager.class.getClassLoader().getResourceAsStream("config.properties")) {
+
+        Properties prop = new Properties();
+        prop.load(input);
+        connection = DriverManager.getConnection(prop.getProperty("db.url"), prop.getProperty("db.username"),
+            prop.getProperty("db.password"));
+      }
     }
     return connection;
   }
