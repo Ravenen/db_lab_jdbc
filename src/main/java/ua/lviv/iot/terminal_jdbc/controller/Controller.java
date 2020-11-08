@@ -10,7 +10,7 @@ public interface Controller<T, K> {
 
   T create(T entity) throws SQLException;
 
-  T update(K id, String fieldName, Object fieldValue) throws SQLException;
+  T update(K id, T entity) throws SQLException;
 
   T delete(K id) throws SQLException;
 }

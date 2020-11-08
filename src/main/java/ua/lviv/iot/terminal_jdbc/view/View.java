@@ -11,20 +11,16 @@ import ua.lviv.iot.terminal_jdbc.model.entity.CountryEntity;
 public class View {
 
   private static final String KEY_EXIT = "Q";
+  
   private static final String ERROR_NO_SUCH_OPTION = "No such option found. Try again.";
-  private static final String TEXT_SELECT_MENU_OPTION = "Please choose menu option:";
+  
+  private static final String TEXT_SELECT_MENU_OPTION = "Please choose menu option: ";
   private static final String TEXT_GO_BACK = "Go back or quit";
 
-//  private Map<String, String> menu;
-//  private Map<String, Map<String, Printable>> menuMethods;
-//  private Map<String, Printable> menuMethods;
   private static Scanner input = new Scanner(System.in);
 
   public View() {
-//    menu = new LinkedHashMap<String, String>();
-//    menuMethods = new LinkedHashMap<String, Map<String,Printable>>();
-//    menuMethods = new LinkedHashMap<String, Printable>();
-//    menu.put("A", "Select all tables");
+
   }
 
   public void show() {
@@ -59,7 +55,7 @@ public class View {
     tableMenuMethods.put("1", this::showCountryMenu);
 //    tableMenuMethods.put("2", this::showRegionMenu);
 //    tableMenuMethods.put("3", this::showCityMenu);
-    tableMenuMethods.put("4", this::showAddressMenu);
+//    tableMenuMethods.put("4", this::showAddressMenu);
 //    tableMenuMethods.put("5", "Table: Manufacturer");
 //    tableMenuMethods.put("6", "Table: Terminal type");
 //    tableMenuMethods.put("7", "Table: Terminal");
@@ -96,29 +92,24 @@ public class View {
     countryMenu.put("1", "Select all countries");
     countryMenu.put("2", "Select country");
     countryMenu.put("3", "Create country");
-    countryMenu.put("4", "Delete country");
+    countryMenu.put("4", "Update country");
+    countryMenu.put("5", "Delete country");
     return countryMenu;
   }
 
   private Map<String, Printable> generateCountryMenuMethods() {
     Controller<CountryEntity, Integer> countryController = new CountryControllerImpl();
     Formatter<CountryEntity, Integer> formatter = new Formatter<>(CountryEntity.class);
-    ViewOperations<CountryEntity, Integer> countryOperation = new ViewOperations<>(countryController, formatter);
+    ViewOperations<CountryEntity, Integer> countryOperation = new ViewOperations<>(countryController, formatter,
+        CountryEntity.class);
 
     Map<String, Printable> countryMenuMethods = new LinkedHashMap<String, Printable>();
     countryMenuMethods.put("1", countryOperation::findAll);
     countryMenuMethods.put("2", countryOperation::findById);
-    countryMenuMethods.put("3", this::createCountry);
-    countryMenuMethods.put("4", this::deleteCountry);
+    countryMenuMethods.put("3", countryOperation::create);
+    countryMenuMethods.put("4", countryOperation::update);
+    countryMenuMethods.put("5", countryOperation::delete);
     return countryMenuMethods;
-  }
-
-  private void createCountry() {
-    System.out.println("Creating new country...");
-  }
-
-  private void deleteCountry() {
-    System.out.println("Deleting country...");
   }
 
   private void showMenuFromMaps(Map<String, String> keyName, Map<String, Printable> keyMethod) {

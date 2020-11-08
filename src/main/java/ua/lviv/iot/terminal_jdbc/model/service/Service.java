@@ -9,8 +9,8 @@ public interface Service<T, K> {
   T findById(K id) throws SQLException;
 
   T create(T entity) throws SQLException;
-
-  T update(K id, String fieldName, Object fieldValue) throws SQLException;
+  
+  T update(K id, T entity) throws SQLException;
 
   T delete(K id) throws SQLException;
 }

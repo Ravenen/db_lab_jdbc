@@ -30,8 +30,8 @@ public abstract class AbstractController<T, K> implements Controller<T, K> {
   }
 
   @Override
-  public T update(K id, String fieldName, Object fieldValue) throws SQLException {
-    return service.update(id, fieldName, fieldValue);
+  public T update(K id, T entity) throws SQLException {
+    return service.update(id, entity);
   }
 
   @Override
