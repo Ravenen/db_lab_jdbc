@@ -7,9 +7,9 @@ import ua.lviv.iot.terminal_jdbc.controller.Controller;
 import ua.lviv.iot.terminal_jdbc.model.service.Service;
 
 public abstract class AbstractController<T, K> implements Controller<T, K> {
-  
+
   private Service<T, K> service;
-  
+
   public AbstractController(Service<T, K> service) {
     this.service = service;
   }

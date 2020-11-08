@@ -21,7 +21,7 @@ abstract public class AbstractDataAccess<T, K> implements DataAccess<T, K> {
   private static final String INSERT_FORMAT = "INSERT %s (%s) VALUES (%s)";
   private static final String UPDATE_FORMAT = "UPDATE %s SET %s WHERE %s=?";
   private static final String DELETE_FORMAT = "DELETE FROM %s WHERE %s=?";
-  
+
   private static final String ERROR_EXEPTION_FORMAT = "[Error] Exeption while %s";
   private static final String ERROR_MESSAGE_FORMAT = "[Error] Message: %s";
 

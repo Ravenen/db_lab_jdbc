@@ -7,14 +7,12 @@ package ua.lviv.iot.terminal_jdbc;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-{
-    /**
-     * Rigorous Test :-)
-     */
+public class AppTest {
+  /**
+   * Rigorous Test :-)
+   */
 //    @Test
-    public void shouldAnswerWithTrue()
-    {
+  public void shouldAnswerWithTrue() {
 //        assertTrue( true );
-    }
+  }
 }

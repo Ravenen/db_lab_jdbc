@@ -9,18 +9,21 @@ import ua.lviv.iot.terminal_jdbc.controller.CityController;
 import ua.lviv.iot.terminal_jdbc.controller.CountryController;
 import ua.lviv.iot.terminal_jdbc.controller.ManufacturerController;
 import ua.lviv.iot.terminal_jdbc.controller.RegionController;
+import ua.lviv.iot.terminal_jdbc.controller.TerminalController;
 import ua.lviv.iot.terminal_jdbc.controller.TerminalTypeController;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.AddressControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CityControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.CountryControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.ManufacturerControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.RegionControllerImpl;
+import ua.lviv.iot.terminal_jdbc.controller.implementation.TerminalControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.TerminalTypeControllerImpl;
 import ua.lviv.iot.terminal_jdbc.model.entity.AddressEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CityEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.CountryEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.ManufacturerEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.RegionEntity;
+import ua.lviv.iot.terminal_jdbc.model.entity.TerminalEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.TerminalTypeEntity;
 
 public class View {
@@ -32,10 +35,10 @@ public class View {
   private static final String TEXT_SELECT_MENU_OPTION = "Please choose menu option: ";
   private static final String TEXT_GO_BACK = "Go back or quit";
 
-  private static Scanner input = new Scanner(System.in);
+  private static Scanner input;
 
   public View() {
-
+    input = new Scanner(System.in);
   }
 
   public void show() {
@@ -73,7 +76,7 @@ public class View {
     tableMenuMethods.put("4", this::showAddressMenu);
     tableMenuMethods.put("5", this::showManufacturerMenu);
     tableMenuMethods.put("6", this::showTerminalTypeMenu);
-//    tableMenuMethods.put("7", "Table: Terminal");
+    tableMenuMethods.put("7", this::showTerminalMenu);
 //    tableMenuMethods.put("8", "Table: Sex");
 //    tableMenuMethods.put("9", "Table: Position");
 //    tableMenuMethods.put("10", "Table: Workman");
@@ -115,6 +118,12 @@ public class View {
   private void showTerminalTypeMenu() {
     Map<String, String> menu = generateTerminalTypeMenu();
     Map<String, Printable> menuMethods = generateTerminalTypeMenuMethods();
+    showMenuFromMaps(menu, menuMethods);
+  }
+
+  private void showTerminalMenu() {
+    Map<String, String> menu = generateTerminalMenu();
+    Map<String, Printable> menuMethods = generateTerminalMenuMethods();
     showMenuFromMaps(menu, menuMethods);
   }
 
@@ -265,6 +274,31 @@ public class View {
     menuMethods.put("3", terminalTypeOperation::create);
     menuMethods.put("4", terminalTypeOperation::update);
     menuMethods.put("5", terminalTypeOperation::delete);
+    return menuMethods;
+  }
+
+  private Map<String, String> generateTerminalMenu() {
+    Map<String, String> menu = new LinkedHashMap<String, String>();
+    menu.put("1", "Select all terminals");
+    menu.put("2", "Select terminal");
+    menu.put("3", "Create terminal");
+    menu.put("4", "Update termnal");
+    menu.put("5", "Delete termina");
+    return menu;
+  }
+
+  private Map<String, Printable> generateTerminalMenuMethods() {
+    TerminalController terminalController = new TerminalControllerImpl();
+    Formatter<TerminalEntity, Integer> formatter = new Formatter<>(TerminalEntity.class);
+    ViewOperations<TerminalEntity, Integer> terminalOperation = new ViewOperations<>(terminalController, formatter,
+        TerminalEntity.class);
+
+    Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
+    menuMethods.put("1", terminalOperation::findAll);
+    menuMethods.put("2", terminalOperation::findById);
+    menuMethods.put("3", terminalOperation::create);
+    menuMethods.put("4", terminalOperation::update);
+    menuMethods.put("5", terminalOperation::delete);
     return menuMethods;
   }
 

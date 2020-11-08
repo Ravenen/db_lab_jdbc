@@ -80,5 +80,5 @@ public class CountryEntity implements Cloneable {
     }
     return true;
   }
-  
+
 }

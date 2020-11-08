@@ -13,7 +13,7 @@ public class RegionEntity {
   private String name;
   @Column(name = "country_id")
   private Integer countryId;
-  
+
   public RegionEntity() {
   }
 
@@ -47,7 +47,7 @@ public class RegionEntity {
   public void setCountryId(Integer countryId) {
     this.countryId = countryId;
   }
-  
+
   @Override
   public String toString() {
     return "RegionEntity [id=" + id + ", name=" + name + ", countryId=" + countryId + "]";

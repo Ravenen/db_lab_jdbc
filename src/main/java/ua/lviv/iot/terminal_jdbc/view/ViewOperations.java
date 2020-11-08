@@ -164,7 +164,7 @@ public class ViewOperations<T, K> {
 
     } while (!keyMenu.equals(KEY_EXIT));
   }
-  
+
   public void delete() {
     String keyMenu;
     do {
@@ -204,7 +204,7 @@ public class ViewOperations<T, K> {
     } else if (fieldType == String.class) {
       limitation = "max length - " + columnLength;
     } else if (fieldType == Date.class) {
-      limitation = "format dd-mm-yyyy";
+      limitation = "format yyyy-mm-dd";
     }
     while (true) {
       System.out.println(String.format(TEXT_ENTER_FIELD_FORMAT, String.format("%s (%s)", columnName, limitation)));
@@ -224,10 +224,15 @@ public class ViewOperations<T, K> {
             System.out.println(ERROR_INVALID_VALUE);
           }
         } else if (fieldType == Date.class) {
-          // FIXME: implement data value
+          Date date = Date.valueOf(inputText);
+          field.setAccessible(true);
+          field.set(entity, date);
           break;
         }
       } catch (NumberFormatException e) {
+        System.out.println(ERROR_INVALID_VALUE);
+        System.out.println(String.format(ERROR_MESSAGE_FORMAT, e.getMessage()));
+      } catch (IllegalArgumentException e) {
         System.out.println(ERROR_INVALID_VALUE);
         System.out.println(String.format(ERROR_MESSAGE_FORMAT, e.getMessage()));
       }

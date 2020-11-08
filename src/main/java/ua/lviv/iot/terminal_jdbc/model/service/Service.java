@@ -9,7 +9,7 @@ public interface Service<T, K> {
   T findById(K id) throws SQLException;
 
   T create(T entity) throws SQLException;
-  
+
   T update(K id, T entity) throws SQLException;
 
   T delete(K id) throws SQLException;

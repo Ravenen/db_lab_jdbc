@@ -12,7 +12,7 @@ import ua.lviv.iot.terminal_jdbc.model.annotation.PrimaryKey;
 import ua.lviv.iot.terminal_jdbc.model.entity.EntityManager;
 
 public class Transformer<T, K> {
-  
+
   private EntityManager<T, K> entityManager;
 
   public Transformer(Class<T> clazz) {
@@ -68,5 +68,5 @@ public class Transformer<T, K> {
     }
     return true;
   }
-  
+
 }

@@ -11,7 +11,7 @@ public class TerminalTypeEntity {
   private Integer id;
   @Column(name = "type", length = 45)
   private String type;
-  
+
   public TerminalTypeEntity() {
   }
 
@@ -79,6 +79,5 @@ public class TerminalTypeEntity {
     }
     return true;
   }
-  
 
 }
