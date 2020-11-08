@@ -70,13 +70,5 @@ public class CountryEntity implements Cloneable {
       return false;
     return true;
   }
-
-  @Override
-  protected CountryEntity clone() throws CloneNotSupportedException {
-    CountryEntity newCountry = new CountryEntity();
-    newCountry.id = this.id;
-    newCountry.name = this.name;
-    return newCountry;
-  }
   
 }

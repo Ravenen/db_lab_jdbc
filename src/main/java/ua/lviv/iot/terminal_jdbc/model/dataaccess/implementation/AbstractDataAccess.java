@@ -21,6 +21,9 @@ abstract public class AbstractDataAccess<T, K> implements DataAccess<T, K> {
   private static final String INSERT_FORMAT = "INSERT %s (%s) VALUES (%s)";
   private static final String UPDATE_FORMAT = "UPDATE %s SET %s WHERE %s=?";
   private static final String DELETE_FORMAT = "DELETE FROM %s WHERE %s=?";
+  
+  private static final String ERROR_EXEPTION_FORMAT = "[Error] Exeption while %s";
+  private static final String ERROR_MESSAGE_FORMAT = "[Error] Message: %s";
 
   private Class<T> clazz;
   private Transformer<T, K> entityTranformer;
@@ -48,8 +51,8 @@ abstract public class AbstractDataAccess<T, K> implements DataAccess<T, K> {
           }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
             | NoSuchMethodException | SecurityException e) {
-          System.out.println("[Error] Exeption while transforming data into objects");
-          System.out.println("[Error] Message:" + e.getMessage());
+          System.out.println(String.format(ERROR_EXEPTION_FORMAT, "transforming data into objects"));
+          System.out.println(String.format(ERROR_MESSAGE_FORMAT, e.getMessage()));
         }
       }
     }
@@ -86,8 +89,8 @@ abstract public class AbstractDataAccess<T, K> implements DataAccess<T, K> {
         entityTranformer.fillInColumnsInPreparedStatement(1, ps, entity);
         return ps.executeUpdate();
       } catch (IllegalArgumentException | IllegalAccessException e) {
-        System.out.println("[Error] Exeption while preparing SQL query for INSERT");
-        System.out.println("[Error] Message:" + e.getMessage());
+        System.out.println(String.format(ERROR_EXEPTION_FORMAT, "preparing SQL query for INSERT"));
+        System.out.println(String.format(ERROR_MESSAGE_FORMAT, e.getMessage()));
       }
 
     }
@@ -119,8 +122,8 @@ abstract public class AbstractDataAccess<T, K> implements DataAccess<T, K> {
           return ps.executeUpdate();
         }
       } catch (IllegalArgumentException | IllegalAccessException e) {
-        System.out.println("[Error] Exeption while preparing SQL query for UPDATE");
-        System.out.println("[Error] Message:" + e.getMessage());
+        System.out.println(String.format(ERROR_EXEPTION_FORMAT, "preparing SQL query for UPDATE"));
+        System.out.println(String.format(ERROR_MESSAGE_FORMAT, e.getMessage()));
       }
 
     }
@@ -175,8 +178,8 @@ abstract public class AbstractDataAccess<T, K> implements DataAccess<T, K> {
           }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
             | NoSuchMethodException | SecurityException e) {
-          System.out.println("[Error] Exeption while transforming data into objects");
-          System.out.println("[Error] Message:" + e.getMessage());
+          System.out.println(String.format(ERROR_EXEPTION_FORMAT, "transforming data into objects"));
+          System.out.println(String.format(ERROR_MESSAGE_FORMAT, e.getMessage()));
         }
       }
     }
