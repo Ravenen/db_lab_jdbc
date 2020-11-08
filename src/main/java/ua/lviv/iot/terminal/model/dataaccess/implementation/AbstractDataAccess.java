@@ -7,14 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-
 import ua.lviv.iot.terminal.model.annotation.Table;
 import ua.lviv.iot.terminal.model.dataaccess.DataAccess;
 import ua.lviv.iot.terminal.model.manager.EntityManager;
 import ua.lviv.iot.terminal.model.persistant.ConnectionManager;
 import ua.lviv.iot.terminal.model.transformer.Transformer;
 
-abstract public class AbstractDataAccess<T, K> implements DataAccess<T, K> {
+public abstract class AbstractDataAccess<T, K> implements DataAccess<T, K> {
 
   private static final String FIND_ALL_FORMAT = "SELECT * FROM %s";
   private static final String FIND_BY_FORMAT = "SELECT * FROM %s WHERE %s=?";

@@ -2,7 +2,6 @@ package ua.lviv.iot.terminal.model.service.implementation;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import ua.lviv.iot.terminal.model.dataaccess.DataAccess;
 import ua.lviv.iot.terminal.model.service.Service;
 

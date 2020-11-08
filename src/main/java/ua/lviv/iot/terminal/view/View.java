@@ -3,7 +3,6 @@ package ua.lviv.iot.terminal.view;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 import ua.lviv.iot.terminal.controller.AddressController;
 import ua.lviv.iot.terminal.controller.CityController;
 import ua.lviv.iot.terminal.controller.CountryController;

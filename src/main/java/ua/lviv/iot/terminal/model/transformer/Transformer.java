@@ -7,7 +7,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import ua.lviv.iot.terminal.model.annotation.Column;
 import ua.lviv.iot.terminal.model.manager.EntityManager;
 

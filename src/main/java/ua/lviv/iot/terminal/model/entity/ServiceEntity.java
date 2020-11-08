@@ -2,7 +2,6 @@ package ua.lviv.iot.terminal.model.entity;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-
 import ua.lviv.iot.terminal.model.annotation.Column;
 import ua.lviv.iot.terminal.model.annotation.InputIgnore;
 import ua.lviv.iot.terminal.model.annotation.PrimaryKey;
@@ -182,5 +181,5 @@ public class ServiceEntity {
     }
     return true;
   }
-  
+
 }

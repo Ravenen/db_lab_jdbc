@@ -1,7 +1,6 @@
 package ua.lviv.iot.terminal.model.entity;
 
 import java.sql.Date;
-
 import ua.lviv.iot.terminal.model.annotation.Column;
 import ua.lviv.iot.terminal.model.annotation.PrimaryKey;
 import ua.lviv.iot.terminal.model.annotation.Table;

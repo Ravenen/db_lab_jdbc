@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-
 import ua.lviv.iot.terminal.controller.Controller;
 import ua.lviv.iot.terminal.model.annotation.Column;
 import ua.lviv.iot.terminal.model.manager.EntityManager;

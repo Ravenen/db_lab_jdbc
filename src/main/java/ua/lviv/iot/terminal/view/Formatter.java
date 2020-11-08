@@ -3,7 +3,6 @@ package ua.lviv.iot.terminal.view;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
-
 import ua.lviv.iot.terminal.model.annotation.Column;
 import ua.lviv.iot.terminal.model.manager.EntityManager;
 
