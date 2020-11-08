@@ -10,6 +10,7 @@ import ua.lviv.iot.terminal_jdbc.controller.CountryController;
 import ua.lviv.iot.terminal_jdbc.controller.ManufacturerController;
 import ua.lviv.iot.terminal_jdbc.controller.PositionController;
 import ua.lviv.iot.terminal_jdbc.controller.RegionController;
+import ua.lviv.iot.terminal_jdbc.controller.ServiceTypeController;
 import ua.lviv.iot.terminal_jdbc.controller.SexController;
 import ua.lviv.iot.terminal_jdbc.controller.TerminalController;
 import ua.lviv.iot.terminal_jdbc.controller.TerminalTypeController;
@@ -20,6 +21,7 @@ import ua.lviv.iot.terminal_jdbc.controller.implementation.CountryControllerImpl
 import ua.lviv.iot.terminal_jdbc.controller.implementation.ManufacturerControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.PositionControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.RegionControllerImpl;
+import ua.lviv.iot.terminal_jdbc.controller.implementation.ServiceTypeControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.SexControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.TerminalControllerImpl;
 import ua.lviv.iot.terminal_jdbc.controller.implementation.TerminalTypeControllerImpl;
@@ -30,6 +32,7 @@ import ua.lviv.iot.terminal_jdbc.model.entity.CountryEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.ManufacturerEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.PositionEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.RegionEntity;
+import ua.lviv.iot.terminal_jdbc.model.entity.ServiceTypeEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.SexEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.TerminalEntity;
 import ua.lviv.iot.terminal_jdbc.model.entity.TerminalTypeEntity;
@@ -89,7 +92,7 @@ public class View {
     tableMenuMethods.put("8", this::showSexMenu);
     tableMenuMethods.put("9", this::showPositionMenu);
     tableMenuMethods.put("10", this::showWorkmanMenu);
-//    tableMenuMethods.put("11", "Table: Service type");
+    tableMenuMethods.put("11", this::showServiceTypeMenu);
 //    tableMenuMethods.put("12", "Table: Service");
     return tableMenuMethods;
   }
@@ -151,6 +154,12 @@ public class View {
   private void showWorkmanMenu() {
     Map<String, String> menu = generateWorkmanMenu();
     Map<String, Printable> menuMethods = generateWorkmanMenuMethods();
+    showMenuFromMaps(menu, menuMethods);
+  }
+
+  private void showServiceTypeMenu() {
+    Map<String, String> menu = generateServiceTypeMenu();
+    Map<String, Printable> menuMethods = generateServiceTypeMenuMethods();
     showMenuFromMaps(menu, menuMethods);
   }
 
@@ -342,8 +351,7 @@ public class View {
   private Map<String, Printable> generateSexMenuMethods() {
     SexController sexController = new SexControllerImpl();
     Formatter<SexEntity, Integer> formatter = new Formatter<>(SexEntity.class);
-    ViewOperations<SexEntity, Integer> sexOperation = new ViewOperations<>(sexController, formatter,
-        SexEntity.class);
+    ViewOperations<SexEntity, Integer> sexOperation = new ViewOperations<>(sexController, formatter, SexEntity.class);
 
     Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
     menuMethods.put("1", sexOperation::findAll);
@@ -401,6 +409,31 @@ public class View {
     menuMethods.put("3", workmanOperation::create);
     menuMethods.put("4", workmanOperation::update);
     menuMethods.put("5", workmanOperation::delete);
+    return menuMethods;
+  }
+
+  private Map<String, String> generateServiceTypeMenu() {
+    Map<String, String> menu = new LinkedHashMap<String, String>();
+    menu.put("1", "Select all service types");
+    menu.put("2", "Select service type");
+    menu.put("3", "Create service type");
+    menu.put("4", "Update service type");
+    menu.put("5", "Delete service type");
+    return menu;
+  }
+
+  private Map<String, Printable> generateServiceTypeMenuMethods() {
+    ServiceTypeController serviceTypeController = new ServiceTypeControllerImpl();
+    Formatter<ServiceTypeEntity, Integer> formatter = new Formatter<>(ServiceTypeEntity.class);
+    ViewOperations<ServiceTypeEntity, Integer> serviceTypeOperation = new ViewOperations<>(serviceTypeController,
+        formatter, ServiceTypeEntity.class);
+
+    Map<String, Printable> menuMethods = new LinkedHashMap<String, Printable>();
+    menuMethods.put("1", serviceTypeOperation::findAll);
+    menuMethods.put("2", serviceTypeOperation::findById);
+    menuMethods.put("3", serviceTypeOperation::create);
+    menuMethods.put("4", serviceTypeOperation::update);
+    menuMethods.put("5", serviceTypeOperation::delete);
     return menuMethods;
   }
 
