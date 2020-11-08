@@ -24,7 +24,7 @@ public class EntityManager<T, K> {
   }
 
   public Field[] getEntityFields() {
-    return fields;
+    return fields.clone();
   }
 
   public String getTableName() {

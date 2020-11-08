@@ -17,15 +17,16 @@ public class Formatter<T, K> {
 
   public void formatTable(List<T> entities) {
     try {
-      String format = "| ";
+      StringBuffer format = new StringBuffer();
+      format.append("| ");
       int[] columnLengthes;
 
       columnLengthes = getColumnLengthes(entities);
       for (int i = 0; i < columnLengthes.length; i++) {
-        format += "%-" + columnLengthes[i] + "s | ";
+        format.append("%-").append(columnLengthes[i]).append("s | ");
       }
       String[] columns = getColumnNames();
-      String formattedNames = String.format(format, (Object[]) columns);
+      String formattedNames = String.format(format.toString(), (Object[]) columns);
       String delimitter = formattedNames.replaceAll("[^|]", "-").replace("|", "+");
       delimitter = delimitter.substring(0, delimitter.length() - 1);
 
@@ -33,7 +34,7 @@ public class Formatter<T, K> {
       System.out.println(formattedNames);
       System.out.println(delimitter);
       for (T entity : entities) {
-        System.out.println(String.format(format, (Object[]) propertiesToArray(entity)));
+        System.out.println(String.format(format.toString(), (Object[]) propertiesToArray(entity)));
       }
       System.out.println(delimitter);
     } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -76,7 +77,7 @@ public class Formatter<T, K> {
           columns[i].setAccessible(true);
           if (columns[i].get(entity) != null) {
             int fieldLength = columns[i].get(entity).toString().length();
-            lengthes[i] = (lengthes[i] < fieldLength) ? fieldLength : lengthes[i];
+            lengthes[i] = lengthes[i] < fieldLength ? fieldLength : lengthes[i];
           }
         }
       }
@@ -84,7 +85,7 @@ public class Formatter<T, K> {
     String[] fieldNames = getColumnNames();
     for (int i = 0; i < fieldNames.length; i++) {
       int fieldNameLength = fieldNames[i].length();
-      lengthes[i] = (lengthes[i] < fieldNameLength) ? fieldNameLength : lengthes[i];
+      lengthes[i] = lengthes[i] < fieldNameLength ? fieldNameLength : lengthes[i];
     }
 
     return lengthes;

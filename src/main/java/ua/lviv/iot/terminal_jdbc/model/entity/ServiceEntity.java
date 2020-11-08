@@ -34,7 +34,7 @@ public class ServiceEntity {
       BigDecimal durationInHours, BigDecimal totalPriceUah) {
     super();
     this.id = id;
-    this.date = date;
+    this.date = (Date) date.clone();
     this.terminalId = terminalId;
     this.workmanId = workmanId;
     this.serviceTypeId = serviceTypeId;
@@ -51,11 +51,11 @@ public class ServiceEntity {
   }
 
   public Date getDate() {
-    return date;
+    return (Date) date.clone();
   }
 
   public void setDate(Date date) {
-    this.date = date;
+    this.date = (Date) date.clone();
   }
 
   public Integer getTerminalId() {

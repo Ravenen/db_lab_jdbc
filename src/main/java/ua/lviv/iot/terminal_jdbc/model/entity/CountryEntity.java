@@ -5,7 +5,7 @@ import ua.lviv.iot.terminal_jdbc.model.annotation.PrimaryKey;
 import ua.lviv.iot.terminal_jdbc.model.annotation.Table;
 
 @Table(name = "country")
-public class CountryEntity implements Cloneable {
+public class CountryEntity {
   @PrimaryKey
   @Column(name = "id")
   private Integer id;

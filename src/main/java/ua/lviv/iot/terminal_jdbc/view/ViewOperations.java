@@ -26,7 +26,7 @@ public class ViewOperations<T, K> {
   private static final String TEXT_CHOOSE_FIELD = "Choose fild to update (enter name):";
   private static final String TEXT_ENTER_FIELD_OR_QUIT_FORMAT = "Enter %s or press '" + KEY_EXIT + "' to go back: ";
 
-  private static Scanner input = new Scanner(System.in);
+  private static Scanner input = new Scanner(System.in, "UTF-8");
 
   private Controller<T, K> controller;
   private Formatter<T, K> formatter;
@@ -125,7 +125,7 @@ public class ViewOperations<T, K> {
               }
               String inputName = input.nextLine();
               if (columnsNames.contains(inputName)) {
-                Field[] fields = entityManager.getEntityFields();
+                Field[] fields = entityManager.getColumnsInputable().toArray(new Field[0]);
                 Field foundField = getFieldByName(fields, inputName);
                 inputValueForField(foundField, foundEntity);
                 @SuppressWarnings("unchecked")
@@ -249,8 +249,7 @@ public class ViewOperations<T, K> {
   }
 
   private Field getFieldByName(Field[] fields, String fieldName) {
-    EntityManager<T, K> entityManager = new EntityManager<>(entityClass);
-    for (Field field : entityManager.getColumnsInputable()) {
+    for (Field field : fields) {
       if (field.getAnnotation(Column.class).name().equals(fieldName)) {
         return field;
       }

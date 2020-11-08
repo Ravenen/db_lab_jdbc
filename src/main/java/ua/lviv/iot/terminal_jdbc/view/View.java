@@ -50,10 +50,9 @@ public class View {
   private static final String TEXT_SELECT_MENU_OPTION = "Please choose menu option: ";
   private static final String TEXT_GO_BACK = "Go back or quit";
 
-  private static Scanner input;
+  private static Scanner input = new Scanner(System.in, "UTF-8");
 
   public View() {
-    input = new Scanner(System.in);
   }
 
   public void show() {
@@ -488,9 +487,9 @@ public class View {
 
   private void printMenu(Map<String, String> keyName) {
     for (String key : keyName.keySet()) {
-      System.out.format("%3s - %s\n", key, keyName.get(key));
+      System.out.format("%3s - %s%n", key, keyName.get(key));
     }
-    System.out.format("%3s - %s\n", KEY_EXIT, TEXT_GO_BACK);
+    System.out.format("%3s - %s%n", KEY_EXIT, TEXT_GO_BACK);
   }
 
 }

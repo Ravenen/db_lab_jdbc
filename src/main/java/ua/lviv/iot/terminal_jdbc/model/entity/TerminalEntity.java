@@ -30,7 +30,7 @@ public class TerminalEntity {
     super();
     this.id = id;
     this.gpsCoordinates = gpsCoordinates;
-    this.commissioningDate = commisioningDate;
+    this.commissioningDate = (Date) commisioningDate.clone();
     this.manufacturerId = manufacturerId;
     this.terminalTypeId = terminalTypeId;
     this.addressId = addressId;
@@ -53,11 +53,11 @@ public class TerminalEntity {
   }
 
   public Date getCommisioningDate() {
-    return commissioningDate;
+    return (Date) commissioningDate.clone();
   }
 
   public void setCommisioningDate(Date commisioningDate) {
-    this.commissioningDate = commisioningDate;
+    this.commissioningDate = (Date) commisioningDate.clone();
   }
 
   public Integer getManufacturerId() {
